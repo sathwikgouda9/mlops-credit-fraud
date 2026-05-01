@@ -1,0 +1,46 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+build/
+.venv/
+venv/
+.env
+
+# Data (tracked by DVC, not Git)
+data/raw/
+data/processed/
+models/
+
+# Reports (generated artefacts)
+reports/
+
+# MLflow local store
+mlruns/
+
+# Test coverage
+.coverage
+coverage.xml
+htmlcov/
+
+# IDE
+.vscode/
+.idea/
+*.iml
+
+# OS
+.DS_Store
+Thumbs.db
+
+data/raw/
+
+data/processed/
+
+models/
+
+mlruns/
+
+reports/
+
+dataraw/

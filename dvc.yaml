@@ -1,0 +1,57 @@
+# dvc.yaml — defines the reproducible ML pipeline
+# Run:  dvc repro
+# Each stage tracks its deps/outs; DVC skips unchanged stages.
+
+stages:
+  preprocess:
+    cmd: python src/preprocess.py
+    deps:
+      - src/preprocess.py
+      - data/raw/creditcard.csv        # tracked by DVC, not Git
+    params:
+      - params.yaml:
+          - preprocess.test_size
+          - preprocess.random_state
+          - preprocess.target_col
+    outs:
+      - data/processed/X_train.pkl
+      - data/processed/X_test.pkl
+      - data/processed/y_train.pkl
+      - data/processed/y_test.pkl
+    metrics:
+      - data/processed/preprocess_summary.json:
+          cache: false
+
+  train:
+    cmd: python src/train.py
+    deps:
+      - src/train.py
+      - data/processed/X_train.pkl
+      - data/processed/y_train.pkl
+    params:
+      - params.yaml:
+          - train.n_estimators
+          - train.max_depth
+          - train.class_weight
+          - train.random_state
+          - train.mlflow_experiment
+    outs:
+      - models/model.pkl
+      - models/model_metadata.json
+    metrics:
+      - reports/train_metrics.json:
+          cache: false
+
+  evaluate:
+    cmd: python src/evaluate.py
+    deps:
+      - src/evaluate.py
+      - models/model.pkl
+      - data/processed/X_test.pkl
+      - data/processed/y_test.pkl
+    metrics:
+      - reports/eval_metrics.json:
+          cache: false
+    plots:
+      - reports/confusion_matrix.json:
+          cache: false
